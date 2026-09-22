@@ -1,0 +1,26 @@
+# HTTPS with automatic Let's Encrypt certificates (Caddy in front of nginx).
+# Usage: DOMAIN=example.com docker compose -f docker-compose.yml -f docker-compose.https.yml up -d --build
+services:
+  web:
+    ports: !reset []
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: cv-caddy
+    restart: unless-stopped
+    depends_on:
+      - web
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN, e.g. DOMAIN=example.com}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    image: maxim-smirnov-cv:latest
+    container_name: cv-site
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8300}:80"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
